@@ -1,9 +1,6 @@
 package com.martin.parser;
 
-import com.martin.parser.tokenizer.TokenInfo;
 import com.martin.parser.tokenizer.Tokenizer;
-import com.martin.parser.tokenizer.token.DoubleToken;
-import com.martin.parser.tokenizer.token.OperationToken;
 import com.martin.parser.tokenizer.token.Token;
 import com.martin.parser.tokenizer.token.TokenType;
 
@@ -41,13 +38,12 @@ public class RegularCalculator implements Calculator{
         Tokenizer tokenizer = new Tokenizer(expression, this.operations);
 
         while (tokenizer.hasNext()){
-            TokenInfo info = tokenizer.nextTokenInfo();
 
-            Token<?> token = info.getToken();
+            Token<?> token = tokenizer.next();
 
-            if (token.getType().equals(TokenType.operand)){
+            if (token.getType().equals(TokenType.OPERAND)){
                 operands.push((Double) token.getValue());
-            } else if (token.getType().equals(TokenType.operation)){
+            } else if (token.getType().equals(TokenType.OPERATION)){
                 char operation = (char) token.getValue();
                 processOperation(operation, operands, operations);
             }

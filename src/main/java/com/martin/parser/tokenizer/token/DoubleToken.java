@@ -10,7 +10,7 @@ public class DoubleToken implements Token<Double>{
 
     @Override
     public TokenType getType() {
-        return TokenType.operand;
+        return TokenType.OPERAND;
     }
 
     @Override

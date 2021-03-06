@@ -6,7 +6,6 @@ import com.martin.parser.tokenizer.token.OperationToken;
 import com.martin.parser.tokenizer.token.Token;
 
 import java.util.Collection;
-import java.util.Set;
 
 public class Tokenizer {
 
@@ -19,8 +18,7 @@ public class Tokenizer {
         this.operations = operations;
     }
 
-    public TokenInfo nextTokenInfo(){
-
+    public Token<?> next(){
         if (tokenStart >= expression.length()){
             return null;
         }
@@ -39,12 +37,11 @@ public class Tokenizer {
         } else if (isOperation(startSymbol)){
             token = new OperationToken(startSymbol);
         } else
-            throw new RuntimeException("Unexpected symbol '" + startSymbol + "', position " + tokenStart);
+            throw new RuntimeException("Unexpected symbol '" + startSymbol + "' at " + tokenStart);
 
-        int startSave = tokenStart;
         tokenStart = tokenEnd + 1;
 
-        return new TokenInfo(token, startSave, tokenEnd);
+        return token;
     }
 
     public boolean hasNext(){
@@ -71,7 +68,6 @@ public class Tokenizer {
             }
 
             end++;
-
             element = end < expr.length() ? expr.charAt(end) : ' ';
         }
 

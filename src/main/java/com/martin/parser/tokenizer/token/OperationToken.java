@@ -10,7 +10,7 @@ public class OperationToken implements Token<Character>{
 
     @Override
     public TokenType getType() {
-        return TokenType.operation;
+        return TokenType.OPERATION;
     }
 
     @Override
