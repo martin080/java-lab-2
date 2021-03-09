@@ -45,6 +45,16 @@ public class RegularCalculatorTest {
     }
 
     @Test
+    public void powTest() throws Exception {
+        assertEquals(4, calculator.calculate("2 ^ 2"));
+        assertEquals(4, calculator.calculate("2.0 ^ 2.0"));
+        assertEquals(4, calculator.calculate("2 ^ (1 + 1)"));
+        assertEquals(2, calculator.calculate("4 ^ (1 / 2)"));
+        assertEquals(9, calculator.calculate("81 ^ (1 / 2)"));
+        assertEquals(2, calculator.calculate("8 ^ (1 / 3)"));
+    }
+
+    @Test
     public void parenthesisTest() throws Exception {
         assertEquals(3d, calculator.calculate("(1 + 5) / 2"));
         assertEquals(3d, calculator.calculate("(1 + (4 + 1)) / 2"));
