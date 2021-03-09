@@ -4,6 +4,7 @@ import com.martin.parser.RegularCalculator;
 import com.martin.parser.tokenizer.token.DoubleToken;
 import com.martin.parser.tokenizer.token.OperationToken;
 import com.martin.parser.tokenizer.token.Token;
+import com.martin.parser.tokenizer.token.VariableToken;
 
 import java.util.Collection;
 
@@ -36,6 +37,12 @@ public class Tokenizer {
             token = new DoubleToken(tokenValue);
         } else if (isOperation(startSymbol)){
             token = new OperationToken(startSymbol);
+        } else if (isVariable(startSymbol)){
+            tokenEnd = getVariableEnd(expression, tokenStart);
+            String tokenValue = expression.substring(tokenStart, getVariableEnd(expression, tokenStart) + 1);
+
+            token = new VariableToken(tokenValue);
+
         } else
             throw new RuntimeException("Unexpected symbol '" + startSymbol + "' at " + tokenStart);
 
@@ -74,11 +81,25 @@ public class Tokenizer {
         return end - 1;
     }
 
+    private int getVariableEnd(String expr, int start){
+        int end = start;
+
+        while (end < expr.length() && expr.charAt(end) >= 'a' && expr.charAt(end) <= 'z'){
+            end++;
+        }
+
+        return end - 1;
+    }
+
     private boolean isOperation(char symbol){
         return operations.contains(symbol);
     }
 
     private boolean isDigit(char symbol){
         return Character.isDigit(symbol);
+    }
+
+    private boolean isVariable(char symbol){
+        return symbol >= 'a' && symbol <= 'z';
     }
 }

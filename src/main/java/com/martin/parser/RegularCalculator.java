@@ -1,6 +1,7 @@
 package com.martin.parser;
 
 import com.martin.parser.tokenizer.Tokenizer;
+import com.martin.parser.tokenizer.token.OperationToken;
 import com.martin.parser.tokenizer.token.Token;
 import com.martin.parser.tokenizer.token.TokenType;
 
@@ -8,11 +9,7 @@ import java.util.*;
 
 public class RegularCalculator implements Calculator{
 
-    private final Set<Character> operations;
-    {
-        operations = new HashSet<>();
-        operations.addAll(Arrays.asList('(', ')', '+', '-', '/', '*', '^'));
-    }
+    public static final Collection<Character> supportedOperations = Set.of('(', ')', '+', '-', '/', '*', '^');
 
     private int getPriority(char operation) {
         switch (operation) {
@@ -28,41 +25,54 @@ public class RegularCalculator implements Calculator{
     }
 
     @Override
-    public double calculate(String expression) {
+    public double calculate(String expression) throws Exception {
 
         expression = "(" + expression.trim() + ")";
 
         Stack<Character> operations = new Stack<>();
         Stack<Double> operands = new Stack<>();
 
-        Tokenizer tokenizer = new Tokenizer(expression, this.operations);
+        Tokenizer tokenizer = new Tokenizer(expression, RegularCalculator.supportedOperations);
+        Token<?> token, prevToken = null;
 
         while (tokenizer.hasNext()){
+            token = tokenizer.next();
 
-            Token<?> token = tokenizer.next();
+            // process signed number in brackets
+            if (prevToken != null && prevToken.getType() == TokenType.OPERATION && token.getType() == TokenType.OPERATION){
+                char prevOperation = ((OperationToken) prevToken).getValue();
+                char operation = ((OperationToken) token).getValue();
 
-            if (token.getType().equals(TokenType.OPERAND)){
+                if (prevOperation == '(' && (operation == '+' || operation == '-')){
+                    operands.push(0d);
+                }
+            }
+
+            if (token.getType() == TokenType.OPERAND){
                 operands.push((Double) token.getValue());
-            } else if (token.getType().equals(TokenType.OPERATION)){
+            } else if (token.getType() == TokenType.OPERATION){
                 char operation = (char) token.getValue();
                 processOperation(operation, operands, operations);
-            }
+            } else
+                throw new Exception("Type of token '" + token.getType() + "' is not supported");
+
+            prevToken = token;
         }
 
         if (operands.size() > 1 || operations.size() > 0)
-            throw new RuntimeException("Unable to parse expression");
+            throw new Exception("Unable to parse expression");
 
         return operands.peek();
     }
 
-    public void processOperation(char operation, Stack<Double> operands, Stack<Character> operations){
+    public void processOperation(char operation, Stack<Double> operands, Stack<Character> operations) throws Exception {
         if (operation == ')'){
             while (!operations.empty() && operations.peek() != '('){
                 popOperation(operands, operations);
             }
 
             if (operations.empty()){
-                throw new RuntimeException("Unable to parse expression");
+                throw new Exception("'(' was expected");
             }
 
             operations.pop();
@@ -106,5 +116,10 @@ public class RegularCalculator implements Calculator{
         int secondPriority = getPriority(operations.peek());
 
         return secondPriority >= 0 && firstPriority >= secondPriority;
+    }
+
+    @Override
+    public Collection<Character> getSupportedOperations() {
+        return supportedOperations;
     }
 }
