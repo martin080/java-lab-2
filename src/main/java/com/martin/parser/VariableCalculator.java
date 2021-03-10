@@ -31,7 +31,7 @@ public class VariableCalculator extends RegularCalculator{
     @Override
     public double calculate(String expression) throws Exception {
         for (String key: variables.keySet()){
-            String pattern = "\b" + key + "\b";
+            String pattern = "\\b" + key + "\\b";
             expression = expression.replaceAll(pattern, wrap(variables.get(key)));
         }
 
