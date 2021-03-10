@@ -1,6 +1,12 @@
 package com.martin.parser.tokenizer.token;
 
+/**
+ * Token for storing operation symbol (hence it stores only 1 character operations)
+ */
 public class OperationToken implements Token<Character>{
+    private class Some {
+        Character character = operation;
+    }
 
     private final Character operation;
 

@@ -66,6 +66,4 @@ public class VariableCalculatorTest {
         assertThrows(Exception.class, () -> calculator.calculate("10 / a"));
         assertThrows(Exception.class, () -> calculator.calculate("a +10 - a + b"));
     }
-
-
 }

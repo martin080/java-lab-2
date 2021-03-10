@@ -1,15 +1,17 @@
 package com.martin.parser;
 
-import com.martin.parser.tokenizer.token.VariableToken;
-
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Map;
 
-public class VariableCalculator implements Calculator{
+/**
+ * Class for evaluating value of math expression with variable support (1 symbol preferable)
+ */
+public class VariableCalculator extends RegularCalculator{
 
-    private final Calculator calculator = new RegularCalculator();
-
+    /**
+     * Map stores variable name and its value
+     */
     private Map<String, Double> variables;
 
     public VariableCalculator(Map<String, Double> variables) {
@@ -20,20 +22,35 @@ public class VariableCalculator implements Calculator{
         this.variables = Collections.emptyMap();
     }
 
+    /**
+     * Method for calculating math expression
+     * @param expression math expression
+     * @return result of math expression
+     * @throws Exception when parsing error occurs or some variable is not specified
+     */
     @Override
     public double calculate(String expression) throws Exception {
         for (String key: variables.keySet()){
-            expression = expression.replaceAll(key, wrap(variables.get(key)));
+            String pattern = "\b" + key + "\b";
+            expression = expression.replaceAll(pattern, wrap(variables.get(key)));
         }
 
-        return calculator.calculate(expression);
+        return super.calculate(expression);
     }
 
+    /**
+     * Method for getting operations supported by calculator
+     * @return collection of operation symbols
+     */
     @Override
     public Collection<Character> getSupportedOperations() {
-        return calculator.getSupportedOperations();
+        return super.getSupportedOperations();
     }
 
+    /**
+     * Method for setting variables to use in future calculations
+     * @param variables map of variables
+     */
     public void setVariables(Map<String, Double> variables) {
         this.variables = variables;
     }

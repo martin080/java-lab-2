@@ -7,23 +7,20 @@ import com.martin.parser.tokenizer.token.TokenType;
 
 import java.util.*;
 
+/**
+ * Class for calculation value of math expression (only with digits, variables are not supported)
+ */
 public class RegularCalculator implements Calculator{
 
     public static final Collection<Character> supportedOperations = Set.of('(', ')', '+', '-', '/', '*', '^');
 
-    private int getPriority(char operation) {
-        switch (operation) {
-            case '(':
-                return -1;
-            case '*': case '/': case '^':
-                return 1;
-            case '+': case '-':
-                return 2;
-            default:
-                throw new RuntimeException("Bad operation");
-        }
-    }
 
+    /**
+     * Method for calculating value of <code>expression</code>
+     * @param expression math expression
+     * @return number - result of calculation
+     * @throws Exception when unsupported symbol or token occurred
+     */
     @Override
     public double calculate(String expression) throws Exception {
 
@@ -65,6 +62,13 @@ public class RegularCalculator implements Calculator{
         return operands.peek();
     }
 
+    /**
+     * Method for processing operation when it occurs in expression
+     * @param operation operation to process, should belong to supportedOperations
+     * @param operands <code>Stack</code> of operands (numbers)
+     * @param operations <code>Stack</code> of operations (symbol in this case, because only 1 symbol operations are supported)
+     * @throws Exception when parenthesis balance is violated
+     */
     public void processOperation(char operation, Stack<Double> operands, Stack<Character> operations) throws Exception {
         if (operation == ')'){
             while (!operations.empty() && operations.peek() != '('){
@@ -85,6 +89,11 @@ public class RegularCalculator implements Calculator{
         }
     }
 
+    /**
+     * Method for executing operation
+     * @param operands <code>Stack</code> of operands (numbers)
+     * @param operations <code>Stack</code> of operations (symbol in this case, because only 1 symbol operations are supported)
+     */
     public void popOperation(Stack<Double> operands, Stack<Character> operations){
         double b = operands.pop();
         double a = operands.pop();
@@ -108,6 +117,12 @@ public class RegularCalculator implements Calculator{
         }
     }
 
+    /**
+     * Method if operation <code>operation</code> can pop top operation
+     * @param operation operation to check
+     * @param operations <code>Stack</code> of operations (symbol in this case, because only 1 symbol operations are supported)
+     * @return true if <code>operation</code> can pop operation on top of the stack, false otherwise
+     */
     public boolean canPop(char operation, Stack<Character> operations){
         if (operations.isEmpty())
             return false;
@@ -116,6 +131,24 @@ public class RegularCalculator implements Calculator{
         int secondPriority = getPriority(operations.peek());
 
         return secondPriority >= 0 && firstPriority >= secondPriority;
+    }
+
+    /**
+     * Method for getting priority of <code>operation</code>
+     * @param operation operation to check
+     * @return priority of <code>operation</code>
+     */
+    private int getPriority(char operation) {
+        switch (operation) {
+            case '(':
+                return -1;
+            case '*': case '/': case '^':
+                return 1;
+            case '+': case '-':
+                return 2;
+            default:
+                throw new RuntimeException("Bad operation");
+        }
     }
 
     @Override

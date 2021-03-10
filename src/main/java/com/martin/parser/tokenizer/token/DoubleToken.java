@@ -1,5 +1,8 @@
 package com.martin.parser.tokenizer.token;
 
+/**
+ * Token for storing numbers
+ */
 public class DoubleToken implements Token<Double>{
 
     private final Double value;

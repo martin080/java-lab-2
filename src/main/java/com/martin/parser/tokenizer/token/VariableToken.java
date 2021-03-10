@@ -1,8 +1,11 @@
 package com.martin.parser.tokenizer.token;
 
+/**
+ * Token for storing variable name, but not the value
+ */
 public class VariableToken implements Token<String>{
 
-    private String name;
+    private final String name;
 
     public VariableToken(String name){
         this.name = name;

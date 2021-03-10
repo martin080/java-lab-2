@@ -9,11 +9,6 @@ import java.util.*;
 
 
 public class Sandbox {
-    private static String wrap(Object obj){
-        return "("  + obj + ")";
-    }
-
-
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
 
@@ -38,7 +33,14 @@ public class Sandbox {
                     Map<String, Double> variables = new HashMap<>();
 
                     while (tokenizer.hasNext()){
-                        Token<?> token = tokenizer.next();
+                        Token<?> token = null;
+                        try {
+                            token = tokenizer.next();
+                        } catch (Exception ex){
+                            System.out.println("Error parsing expression");
+                            return;
+                        }
+
                         if (token.getType() == TokenType.VARIABLE && !variables.containsKey(token.getValue())){
 
                             System.out.printf("Enter variable '" + token.getValue() + "'%n>> ");
