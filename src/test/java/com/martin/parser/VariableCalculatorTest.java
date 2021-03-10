@@ -48,7 +48,7 @@ public class VariableCalculatorTest {
 
     @Test
     public void longNameTest() throws Exception{
-        Map<String, Double> vars = Map.of("ab", 10d, "ba", 20d);
+        Map<String, Double> vars = Map.of("ab", 10d, "ba", 20d, "a", 10d, "aaaaa", 50d);
         calculator.setVariables(vars);
 
         assertEquals(200d, calculator.calculate("ab * ba"));
@@ -56,6 +56,8 @@ public class VariableCalculatorTest {
         assertEquals(2000d, calculator.calculate("ab * ab * ba"));
         assertEquals(10d, calculator.calculate("ab * ba / ba"));
         assertEquals(1d, calculator.calculate("ab * ba / (ba * ab)"));
+        assertEquals(2, calculator.calculate("ba / a"));
+        assertEquals(111d, calculator.calculate("aaaaa + a / a + a + aaaaa"));
     }
 
     @Test
